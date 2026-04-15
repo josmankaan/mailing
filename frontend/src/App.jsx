@@ -10,6 +10,9 @@ import HistoryPage from './pages/HistoryPage'
 import ExportPage from './pages/ExportPage'
 import ComingSoonPage from './pages/ComingSoonPage'
 import AdminPanel from './pages/AdminPanel'
+import LandingPage from './pages/LandingPage'
+import VerifyEmailPage from './pages/VerifyEmailPage'
+import PricingPage from './pages/PricingPage'
 import './App.css'
 
 function ProtectedRoute({ children }) {
@@ -67,23 +70,33 @@ function HomePage() {
   );
 }
 
+function MainRoutes() {
+  const { token } = useApp();
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email/:token" element={<VerifyEmailPage />} />
+        <Route path="/" element={
+          token ? <Navigate to="/dashboard" replace /> : <LandingPage />
+        } />
+        <Route path="/dashboard" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+        <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
+        <Route path="/export" element={<ProtectedRoute><ExportPage /></ProtectedRoute>} />
+        <Route path="/pricing" element={<ProtectedRoute><PricingPage /></ProtectedRoute>} />
+        <Route path="/integrations" element={<ProtectedRoute><ComingSoonPage title="Integrations" /></ProtectedRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
+      </Route>
+    </Routes>
+  );
+}
+
 function App() {
   return (
     <AppProvider>
       <BrowserRouter>
-        <Routes>
-          <Route element={<Layout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/" element={
-              <ProtectedRoute><HomePage /></ProtectedRoute>
-            } />
-            <Route path="/history" element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
-            <Route path="/export" element={<ProtectedRoute><ExportPage /></ProtectedRoute>} />
-            <Route path="/integrations" element={<ProtectedRoute><ComingSoonPage title="Integrations" /></ProtectedRoute>} />
-            <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
-          </Route>
-        </Routes>
+        <MainRoutes />
       </BrowserRouter>
     </AppProvider>
   )

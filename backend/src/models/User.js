@@ -23,11 +23,19 @@ module.exports = (sequelize, DataTypes) => {
     },
     tokens: {
       type: DataTypes.INTEGER,
-      defaultValue: 1000
+      defaultValue: 50
     },
     isAdmin: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    verificationToken: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     hooks: {

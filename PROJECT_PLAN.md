@@ -205,7 +205,7 @@ b2b-lead-scraper/
 - Kullanıcı şifrelerinin güvenli şifrelenmesi (Bcrypt).
 
 ### 8.2 Token ve Kredi Sistemi ⏳
-- Her yeni kayıt olan kullanıcıya 1000 Token hediye edilmesi.
+- Her yeni kayıt olan kullanıcıya 50 Token hediye edilmesi.
 - Başarılı Email Kazıma (Extract Emails) işlemi başına hesaptan 20 Token düşülmesi.
 - Token bakiyesi 20'nin altına düşen kullanıcıların tarama yapmasının engellenmesi.
 - Arayüzde giriş yapan kullanıcının güncel token bakiyesinin sağ üstte gösterilmesi.

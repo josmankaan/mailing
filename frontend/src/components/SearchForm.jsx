@@ -2,10 +2,17 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useApp } from '../contexts/AppContext';
 
+const LEAD_OPTIONS = [
+  { value: 20, label: '20', pages: 1, desc: 'Quick Scan' },
+  { value: 40, label: '40', pages: 2, desc: 'Standard' },
+  { value: 60, label: '60', pages: 3, desc: 'Deep Mine' },
+];
+
 const SearchForm = ({ onSearchResults }) => {
   const { fetchUser, token } = useApp();
   const [sector, setSector] = useState('');
   const [city, setCity] = useState('');
+  const [leadLimit, setLeadLimit] = useState(20);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -28,7 +35,8 @@ const SearchForm = ({ onSearchResults }) => {
     try {
       const response = await axios.post('http://localhost:3001/api/places/search', {
         sector: sector.trim(),
-        city: city.trim()
+        city: city.trim(),
+        leadLimit
       }, {
         headers: {
           Authorization: `Bearer ${token}`
@@ -47,13 +55,12 @@ const SearchForm = ({ onSearchResults }) => {
     } catch (err) {
       const msg = err.response?.data?.error || 'Network error. Please try again.';
       setError(msg);
-      if (err.response?.status === 402) {
-        // Specific handling for insufficient tokens if needed
-      }
     } finally {
       setLoading(false);
     }
   };
+
+  const selectedOption = LEAD_OPTIONS.find(o => o.value === leadLimit);
 
   return (
     <section className="mb-12">
@@ -66,7 +73,7 @@ const SearchForm = ({ onSearchResults }) => {
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
             {/* Sector Input */}
-            <div className="md:col-span-5 group">
+            <div className="md:col-span-4 group">
               <label className="block text-xs font-bold uppercase tracking-widest text-primary mb-2 pl-1">Sector</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">apartment</span>
@@ -82,7 +89,7 @@ const SearchForm = ({ onSearchResults }) => {
             </div>
 
             {/* City Input */}
-            <div className="md:col-span-4 group">
+            <div className="md:col-span-3 group">
               <label className="block text-xs font-bold uppercase tracking-widest text-primary mb-2 pl-1">City</label>
               <div className="relative">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">location_on</span>
@@ -97,27 +104,69 @@ const SearchForm = ({ onSearchResults }) => {
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Lead Count Selector */}
             <div className="md:col-span-3">
+              <label className="block text-xs font-bold uppercase tracking-widest text-primary mb-2 pl-1">
+                Lead Count
+                <span className="ml-2 text-outline normal-case font-normal tracking-normal">~{selectedOption?.value} token</span>
+              </label>
+              <div className="flex gap-2 h-[46px]">
+                {LEAD_OPTIONS.map(opt => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    disabled={loading}
+                    onClick={() => setLeadLimit(opt.value)}
+                    className={`flex-1 flex flex-col items-center justify-center rounded-lg text-sm font-bold transition-all border ${
+                      leadLimit === opt.value
+                        ? 'bg-primary text-white border-primary shadow-md shadow-primary/25'
+                        : 'bg-surface-container-low border-outline-variant/20 text-on-surface-variant hover:border-primary/40 hover:text-primary'
+                    } disabled:opacity-50`}
+                  >
+                    <span className="leading-none">{opt.label}</span>
+                    <span className={`text-[9px] leading-none mt-0.5 font-normal ${leadLimit === opt.value ? 'text-white/70' : 'text-outline'}`}>{opt.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="md:col-span-2">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full cta-gradient text-white font-bold py-3 px-6 rounded-lg inner-glow shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                className="w-full cta-gradient text-white font-bold py-3 px-4 rounded-lg inner-glow shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-60"
               >
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Searching...
+                    <span className="text-sm">Mining...</span>
                   </>
                 ) : (
                   <>
                     <span className="material-symbols-outlined" style={{fontVariationSettings: "'FILL' 1"}}>rocket_launch</span>
-                    Start Mining
+                    <span className="text-sm">Mine</span>
                   </>
                 )}
               </button>
             </div>
           </div>
+
+          {/* Loading progress hint */}
+          {loading && (
+            <div className="mt-4 flex items-center gap-3 text-sm text-on-surface-variant">
+              <div className="flex gap-1">
+                {LEAD_OPTIONS.map((opt, i) => (
+                  <div
+                    key={i}
+                    className={`h-1 rounded-full transition-all ${opt.value <= leadLimit ? 'bg-primary' : 'bg-outline-variant/20'}`}
+                    style={{ width: `${leadLimit >= opt.value ? 32 : 16}px` }}
+                  />
+                ))}
+              </div>
+              <span>Fetching up to {leadLimit} leads — this may take {leadLimit === 20 ? '~10s' : leadLimit === 40 ? '~20s' : '~30s'}...</span>
+            </div>
+          )}
 
           {error && (
             <div className="mt-4 bg-error-container text-on-error-container px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2">

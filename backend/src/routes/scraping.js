@@ -26,10 +26,10 @@ router.post('/emails', auth, async (req, res) => {
     });
   }
 
-  if (websites.length > 20) {
+  if (websites.length > 60) {
     return res.status(400).json({
       success: false,
-      error: 'Maximum 20 websites allowed per request'
+      error: 'Maximum 60 websites allowed per request'
     });
   }
 

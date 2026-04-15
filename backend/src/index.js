@@ -1,21 +1,25 @@
-const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../.env') });
+
+const express = require('express');
+const cors = require('cors');
 const placesRoutes = require('./routes/places');
 const scrapingRoutes = require('./routes/scraping');
 const authRoutes = require('./routes/auth');
 const historyRoutes = require('./routes/history');
 const adminRoutes = require('./routes/admin');
+const paymentRoutes = require('./routes/payments');
 const db = require('./models');
-
-// Load .env from backend directory
-dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(cors());
+
+// Webhook body'si raw olarak okunması gerektiği için, payments route'unu json() parser'ından önce tanımlıyoruz.
+app.use('/api/payments', paymentRoutes);
+
 app.use(express.json());
 
 app.use('/api/places', placesRoutes);
@@ -32,7 +36,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-db.sequelize.sync({ alter: true }).then(() => {
+db.sequelize.sync().then(() => {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

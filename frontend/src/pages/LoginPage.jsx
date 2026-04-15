@@ -15,7 +15,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(form.username, form.password);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Giriş başarısız. Bilgilerinizi kontrol edin.');
     } finally {

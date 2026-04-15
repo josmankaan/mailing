@@ -6,18 +6,20 @@ async function createAdmin(username, email, password) {
 
     if (user) {
       user.isAdmin = true;
+      user.isVerified = true;
       user.email = email;
       await user.save();
-      console.log(`User ${username} promoted to admin.`);
+      console.log(`User ${username} promoted to admin and verified.`);
     } else {
       user = await db.User.create({
         username,
         email,
         password,
         isAdmin: true,
+        isVerified: true,
         tokens: 999999
       });
-      console.log(`Admin user ${username} created.`);
+      console.log(`Admin user ${username} created and verified.`);
     }
     process.exit(0);
   } catch (error) {

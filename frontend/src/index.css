@@ -47,3 +47,33 @@ body {
   animation: pulse-glow 1.5s ease-in-out infinite;
   z-index: 10;
 }
+
+/* Permanent Scrollbar Utility */
+.scrollbar-permanent::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  display: block;
+}
+
+.scrollbar-permanent::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 10px;
+}
+
+.scrollbar-permanent::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+}
+
+.scrollbar-permanent::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+  background-clip: padding-box;
+}
+
+/* For Firefox */
+.scrollbar-permanent {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.03);
+}

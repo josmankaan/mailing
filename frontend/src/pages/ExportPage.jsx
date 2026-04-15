@@ -11,6 +11,17 @@ export default function ExportPage() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  // Cell Coloring Persistence
+  const storageKeyColors = 'atlas_prime_export_cell_colors';
+  const [cellColors, setCellColors] = useState(() => {
+    const saved = localStorage.getItem(storageKeyColors);
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  useEffect(() => {
+    localStorage.setItem(storageKeyColors, JSON.stringify(cellColors));
+  }, [cellColors]);
+
   // Column definitions
   const allColumns = [
     { key: 'name', label: 'Company Name' },
@@ -220,6 +231,36 @@ export default function ExportPage() {
     if (e) e.preventDefault();
   };
 
+  const applyColor = (color) => {
+    if (!selectionStart || !selectionEnd) return;
+    
+    const minRow = Math.min(selectionStart.row, selectionEnd.row);
+    const maxRow = Math.max(selectionStart.row, selectionEnd.row);
+    const minCol = Math.min(selectionStart.col, selectionEnd.col);
+    const maxCol = Math.max(selectionStart.col, selectionEnd.col);
+
+    const newColors = { ...cellColors };
+    
+    for (let r = minRow; r <= maxRow; r++) {
+      const lead = filteredLeads[r];
+      // Use a robust key combining lead identifier and column
+      const leadId = lead.place_id || lead.id || lead.name;
+      
+      for (let c = minCol; c <= maxCol; c++) {
+        const colKey = currentColumns[c];
+        const cellKey = `${leadId}-${colKey}`;
+        
+        if (color === null) {
+          delete newColors[cellKey];
+        } else {
+          newColors[cellKey] = color;
+        }
+      }
+    }
+    
+    setCellColors(newColors);
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Cmd+C or Ctrl+C
@@ -336,9 +377,12 @@ export default function ExportPage() {
                           key={colKey} 
                           onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                           onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                          style={{
+                            backgroundColor: !isSelected(rowIndex, colIndex) ? cellColors[`${lead.place_id || lead.id || lead.name}-${colKey}`] : undefined
+                          }}
                           className={`px-4 py-2 text-xs truncate border-r border-outline-variant/5 relative ${
                             isSelected(rowIndex, colIndex) 
-                              ? 'bg-primary/10 ring-1 ring-inset ring-primary/40 z-10' 
+                              ? 'bg-primary/20 ring-2 ring-inset ring-primary/60 z-10' 
                               : 'text-on-surface'
                           }`}
                         >
@@ -376,8 +420,49 @@ export default function ExportPage() {
           Reset Table View
         </button>
 
+        {/* Cell Painter */}
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 p-5">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined text-sm">palette</span>
+            Cell Painter
+          </h2>
+          <div className="grid grid-cols-2 gap-2">
+            <button 
+              onClick={() => applyColor('rgba(34, 197, 94, 0.2)')} // Light Green
+              disabled={!selectionStart}
+              className="flex items-center justify-center gap-2 px-3 py-2 bg-green-500/10 text-green-700 border border-green-500/20 rounded-lg text-[10px] font-bold uppercase transition-all hover:bg-green-500/20 disabled:opacity-30"
+            >
+              Mailed
+            </button>
+            <button 
+              onClick={() => applyColor('rgba(239, 68, 68, 0.2)')} // Light Red
+              disabled={!selectionStart}
+              className="flex items-center justify-center gap-2 px-3 py-2 bg-red-500/10 text-red-700 border border-red-500/20 rounded-lg text-[10px] font-bold uppercase transition-all hover:bg-red-500/20 disabled:opacity-30"
+            >
+              Invalid
+            </button>
+            <button 
+              onClick={() => applyColor('rgba(234, 179, 8, 0.2)')} // Light Yellow
+              disabled={!selectionStart}
+              className="flex items-center justify-center gap-2 px-3 py-2 bg-yellow-500/10 text-yellow-700 border border-yellow-500/20 rounded-lg text-[10px] font-bold uppercase transition-all hover:bg-yellow-500/20 disabled:opacity-30"
+            >
+              Later
+            </button>
+            <button 
+              onClick={() => applyColor(null)}
+              disabled={!selectionStart}
+              className="flex items-center justify-center gap-2 px-3 py-2 bg-surface-container-low text-outline border border-outline-variant/20 rounded-lg text-[10px] font-bold uppercase transition-all hover:bg-surface-container-high disabled:opacity-30"
+            >
+              Clear
+            </button>
+          </div>
+          <p className="text-[9px] text-outline mt-3 leading-tight">
+            Select a range in the table then click a color to mark cells.
+          </p>
+        </div>
+
         {/* Visible Columns */}
-        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 p-5 flex-1 overflow-auto">
+        <div className="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/10 p-5 flex-1 overflow-auto scrollbar-permanent">
           <h2 className="text-xs font-bold uppercase tracking-widest text-primary mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-sm">view_column</span>
             Visible Columns
