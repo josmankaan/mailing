@@ -33,7 +33,7 @@ const SearchForm = ({ onSearchResults }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:3001/api/places/search', {
+      const response = await axios.post('https://api.atlasdatamining.com/api/places/search', {
         sector: sector.trim(),
         city: city.trim(),
         leadLimit

@@ -57,7 +57,7 @@ export default function LandingPage() {
       </section>
 
       {/* Video Demo Section */}
-      <section id="how-it-works" className="py-24 bg-surface relative overflow-hidden">
+      <section id="how-it-works" className="hidden py-24 bg-surface relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-5xl font-black text-on-surface tracking-tighter mb-4 text-center">SEE IT IN ACTION</h2>

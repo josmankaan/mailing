@@ -17,7 +17,7 @@ export default function AdminPanel() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/admin/users');
+      const res = await axios.get('https://api.atlasdatamining.com/api/admin/users');
       if (res.data.success) {
         setUsers(res.data.users);
       }
@@ -33,7 +33,7 @@ export default function AdminPanel() {
       const tokens = parseInt(newTokenValue);
       if (isNaN(tokens)) return;
 
-      const res = await axios.put(`http://localhost:3001/api/admin/users/${userId}/tokens`, { tokens });
+      const res = await axios.put(`https://api.atlasdatamining.com/api/admin/users/${userId}/tokens`, { tokens });
       if (res.data.success) {
         setUsers(users.map(u => u.id === userId ? { ...u, tokens: res.data.user.tokens } : u));
         setEditingToken(null);

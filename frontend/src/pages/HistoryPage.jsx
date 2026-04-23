@@ -19,7 +19,7 @@ export default function HistoryPage() {
       const params = {};
       if (startDate) params.startDate = startDate;
       if (endDate) params.endDate = endDate + 'T23:59:59';
-      const res = await axios.get('http://localhost:3001/api/history', { 
+      const res = await axios.get('https://api.atlasdatamining.com/api/history', { 
         params,
         headers: { Authorization: `Bearer ${b2b_token}` }
       });

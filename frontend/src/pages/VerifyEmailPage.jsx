@@ -10,7 +10,7 @@ export default function VerifyEmailPage() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/auth/verify/${token}`);
+        const response = await axios.get(`https://api.atlasdatamining.com/api/auth/verify/${token}`);
         setStatus('success');
         setMessage(response.data.message);
       } catch (err) {

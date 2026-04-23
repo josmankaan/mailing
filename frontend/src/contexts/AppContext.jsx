@@ -34,7 +34,7 @@ export const AppProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await axios.get('http://localhost:3001/api/auth/me');
+      const res = await axios.get('https://api.atlasdatamining.com/api/auth/me');
       setUser(res.data.user);
     } catch (err) {
       console.error('Failed to fetch user', err);
@@ -43,14 +43,14 @@ export const AppProvider = ({ children }) => {
   };
 
   const login = async (username, password) => {
-    const res = await axios.post('http://localhost:3001/api/auth/login', { username, password });
+    const res = await axios.post('https://api.atlasdatamining.com/api/auth/login', { username, password });
     localStorage.setItem('b2b_token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
   };
 
   const register = async (username, password, email) => {
-    const res = await axios.post('http://localhost:3001/api/auth/register', { username, password, email });
+    const res = await axios.post('https://api.atlasdatamining.com/api/auth/register', { username, password, email });
     localStorage.setItem('b2b_token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
@@ -107,7 +107,7 @@ export const AppProvider = ({ children }) => {
   const deleteHistoryRecord = async (id) => {
     try {
       const b2b_token = localStorage.getItem('b2b_token');
-      await axios.delete(`http://localhost:3001/api/history/${id}`, {
+      await axios.delete(`https://api.atlasdatamining.com/api/history/${id}`, {
         headers: {
           'Authorization': `Bearer ${b2b_token}`
         }
@@ -122,7 +122,7 @@ export const AppProvider = ({ children }) => {
   const updateHistoryMailed = async (id, isMailed) => {
     try {
       const b2b_token = localStorage.getItem('b2b_token');
-      await axios.patch(`http://localhost:3001/api/history/${id}`, { isMailed }, {
+      await axios.patch(`https://api.atlasdatamining.com/api/history/${id}`, { isMailed }, {
         headers: {
           'Authorization': `Bearer ${b2b_token}`
         }

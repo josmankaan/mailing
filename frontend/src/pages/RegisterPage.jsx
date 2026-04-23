@@ -31,7 +31,7 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:3001/api/auth/register', { username, email, password });
+      const response = await axios.post('https://api.atlasdatamining.com/api/auth/register', { username, email, password });
       if (response.data.success) {
         setSuccessState(true);
       }

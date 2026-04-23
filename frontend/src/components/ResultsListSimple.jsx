@@ -49,7 +49,7 @@ const ResultsListSimple = ({ places, sector, city, historyId }) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/scrape/emails', {
+      const response = await axios.post('https://api.atlasdatamining.com/api/scrape/emails', {
         websites,
         sector: sector || '',
         city: city || '',
@@ -81,7 +81,7 @@ const ResultsListSimple = ({ places, sector, city, historyId }) => {
   const pollForResults = (jobId) => {
     const interval = setInterval(async () => {
       try {
-        const statusResponse = await axios.get(`http://localhost:3001/api/scrape/status/${jobId}`);
+        const statusResponse = await axios.get(`https://api.atlasdatamining.com/api/scrape/status/${jobId}`);
         const job = statusResponse.data.job;
 
         if (job.status === 'completed') {
