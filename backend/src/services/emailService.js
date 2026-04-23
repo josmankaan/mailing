@@ -30,7 +30,10 @@ const sendVerificationEmail = async (email, username, token) => {
     });
   }
 
-  const verificationUrl = `${process.env.CLIENT_URL || 'http://localhost:5173'}/verify-email/${token}`;
+  // SSL/HTTPS zorlaması ile güvenli backend rotası oluşturuluyor
+  const baseUrl = process.env.API_URL || 'https://api.atlasdatamining.com';
+  const secureBaseUrl = baseUrl.startsWith('http://') ? baseUrl.replace('http://', 'https://') : baseUrl;
+  const verificationUrl = `${secureBaseUrl}/verify-email/${token}`;
 
   const mailOptions = {
     from: process.env.EMAIL_FROM || 'Atlas Data Mining <noreply@atlasdatamining.com>',
