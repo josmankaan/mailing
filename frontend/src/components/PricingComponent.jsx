@@ -9,7 +9,7 @@ const pricingPlans = [
     price: "15",
     period: "one-time",
     credits: "1,000",
-    url: "https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_oUuzdIGUYnFcW2LHS67RYvNmBqmtBWXw7Cgfe3klKrP/redirect",
+    url: "https://buy.polar.sh/polar_cl_xve4aj2QhkojbrVyaYLVofZenHw04Xy0mtV3c2OZUxo",
     features: [
       "1,000 Mining Credits",
       "Instant Email Extraction",
@@ -26,7 +26,7 @@ const pricingPlans = [
     price: "39",
     period: "one-time",
     credits: "5,000",
-    url: "https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_oUuzdIGUYnFcW2LHS67RYvNmBqmtBWXw7Cgfe3klKrP/redirect",
+    url: "https://buy.polar.sh/polar_cl_EAvUNzZVojfGCkpl8YtWYI5gsLOOl3JcI2aEA3HGatU",
     features: [
       "5,000 Mining Credits",
       "Advanced Contact Refinement",
@@ -43,7 +43,7 @@ const pricingPlans = [
     price: "199",
     period: "one-time",
     credits: "20,000",
-    url: "https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_oUuzdIGUYnFcW2LHS67RYvNmBqmtBWXw7Cgfe3klKrP/redirect",
+    url: "https://buy.polar.sh/polar_cl_lpAJjrd5nzHRt2zOz5Mnw7gt6gV766ZcyoWOX2LJzqo",
     features: [
       "20,000 Mining Credits",
       "Unlimited Bulk Operations",

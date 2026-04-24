@@ -71,7 +71,7 @@ export default function Layout() {
       }`}>
         <div className="flex justify-between items-center px-6 h-full w-full max-w-[1440px] mx-auto">
           <div className="flex items-center gap-8">
-            <Link to={user ? "/dashboard" : "/"} className="text-xl font-black tracking-tighter text-slate-900 group flex items-center gap-2">
+            <Link to="/" className="text-xl font-black tracking-tighter text-slate-900 group flex items-center gap-2">
               <span className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white text-xs">A</span>
               Atlas Data Mining
             </Link>

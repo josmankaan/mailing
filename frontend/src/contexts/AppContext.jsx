@@ -49,6 +49,13 @@ export const AppProvider = ({ children }) => {
     setUser(res.data.user);
   };
 
+  const googleLogin = async (googleToken) => {
+    const res = await axios.post('https://api.atlasdatamining.com/api/auth/google', { token: googleToken });
+    localStorage.setItem('b2b_token', res.data.token);
+    setToken(res.data.token);
+    setUser(res.data.user);
+  };
+
   const register = async (username, password, email) => {
     const res = await axios.post('https://api.atlasdatamining.com/api/auth/register', { username, password, email });
     localStorage.setItem('b2b_token', res.data.token);
@@ -159,6 +166,7 @@ export const AppProvider = ({ children }) => {
     user,
     token,
     login,
+    googleLogin,
     register,
     logout,
     fetchUser,

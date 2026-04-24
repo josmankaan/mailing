@@ -123,4 +123,58 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// POST /api/auth/google
+router.post('/google', async (req, res) => {
+  try {
+    const { token } = req.body;
+    const https = require('https');
+    
+    https.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${token}`, (apiRes) => {
+      let data = '';
+      apiRes.on('data', (chunk) => { data += chunk; });
+      apiRes.on('end', async () => {
+        try {
+          const payload = JSON.parse(data);
+          if (payload.error) {
+            return res.status(400).json({ success: false, error: 'Invalid Google token' });
+          }
+
+          const { email, name } = payload;
+          let user = await db.User.findOne({ where: { email } });
+
+          if (!user) {
+            const randomPassword = crypto.randomBytes(16).toString('hex');
+            const baseUsername = name ? name.replace(/\s+/g, '').toLowerCase() : email.split('@')[0];
+            const uniqueUsername = baseUsername + Math.floor(Math.random() * 10000);
+            
+            user = await db.User.create({
+              username: uniqueUsername,
+              password: randomPassword,
+              email: email,
+              tokens: 50,
+              isVerified: true,
+              verificationToken: null
+            });
+          }
+
+          const jwtPayload = { user: { id: user.id, isAdmin: user.isAdmin } };
+          jwt.sign(jwtPayload, process.env.JWT_SECRET || 'b2b_secret_key', { expiresIn: '7d' }, (err, jwtToken) => {
+            if (err) throw err;
+            res.json({ success: true, token: jwtToken, user: { id: user.id, username: user.username, email: user.email, tokens: user.tokens, isAdmin: user.isAdmin } });
+          });
+        } catch (err) {
+          console.error(err);
+          res.status(500).json({ success: false, error: 'Failed to process Google token data' });
+        }
+      });
+    }).on('error', (err) => {
+      console.error(err);
+      res.status(500).json({ success: false, error: 'Failed to connect to Google Auth' });
+    });
+  } catch (error) {
+    console.error('Google Auth Error:', error);
+    res.status(500).json({ success: false, error: 'Server error during Google Authentication' });
+  }
+});
+
 module.exports = router;

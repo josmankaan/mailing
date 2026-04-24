@@ -1,13 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useApp } from '../contexts/AppContext';
 
 export default function LoginPage() {
-  const { login } = useApp();
+  const { login, googleLogin } = useApp();
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    /* global google */
+    if (window.google) {
+      google.accounts.id.initialize({
+        client_id: "344188296684-37avqe2r4un6th9rqddt4bupf07orcrd.apps.googleusercontent.com",
+        callback: handleGoogleResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("google-signIn-button"),
+        { theme: "outline", size: "large", width: "100%", text: "signin_with" }
+      );
+    }
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
+    try {
+      setLoading(true);
+      await googleLogin(response.credential);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.error || 'Google girişi başarısız.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,6 +105,14 @@ export default function LoginPage() {
             )}
           </button>
         </form>
+
+        <div className="my-6 flex items-center justify-center">
+          <span className="w-full h-px bg-outline-variant/30"></span>
+          <span className="px-3 text-xs font-bold uppercase tracking-widest text-outline-variant">OR</span>
+          <span className="w-full h-px bg-outline-variant/30"></span>
+        </div>
+
+        <div className="flex justify-center mb-6" id="google-signIn-button"></div>
 
         <p className="text-center text-sm text-outline mt-6">
           Don't have an account?{' '}

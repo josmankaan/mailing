@@ -15,7 +15,15 @@ const db = require('./models');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'https://atlasdatamining.com',
+    'https://www.atlasdatamining.com'
+  ],
+  credentials: true
+}));
 
 // Webhook body'si raw olarak okunması gerektiği için, payments route'unu json() parser'ından önce tanımlıyoruz.
 app.use('/api/payments', paymentRoutes);
